@@ -10,5 +10,5 @@ node_templates:
     interfaces:
       cloudify.interfaces.lifecycle:
         configure:
-          implementation: components/nfv-lab-setup/setup.sh
+          implementation: components/multicloud-lab-setup/setup.sh
           executor: central_deployment_agent
