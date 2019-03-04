@@ -27,5 +27,3 @@ cfy blueprints upload https://github.com/Cloudify-PS/fortigate-pf-vnf-blueprint/
 #cfy deployments create -b "fortigate-vnf-bp" fortigate-vnf
 #cfy deployments create -b "fortigate-portforward-bp" fortigate-portforward
 
-
-
