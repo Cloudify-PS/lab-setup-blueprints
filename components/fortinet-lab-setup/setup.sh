@@ -3,7 +3,7 @@
 cfy profiles use localhost -u admin -p admin -t default_tenant
 
 # upload openstack v2.14.7 for old openstack version and plugin
-cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-openstack-plugin/2.14.8/cloudify_openstack_plugin-2.14.8-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-cosmo/cloudify-openstack-plugin/releases/download/2.14.8/plugin.yaml
+cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-openstack-plugin/2.14.7/cloudify_openstack_plugin-2.14.7-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-cosmo/cloudify-openstack-plugin/releases/download/2.14.7/plugin.yaml
 
 # Install the webserver
 ####
