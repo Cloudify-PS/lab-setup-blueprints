@@ -1,0 +1,25 @@
+lab IDs
+
+m1.tiny	1	
+m1.small 2	
+1x2	4d798e17-3439-42e1-ad22-fb956ec22b54
+2x2	62ed898b-0871-481a-9bb4-ac5f81263b33
+m1.medium 3	
+cloudify_flavor b1cefcbf-fab9-40d9-a084-8aeb2514028b	
+m1.large  4	
+m1.xlarge 5
+
+
+NW
+
+external_network    2a68ccf6-6722-42f0-a300-de647e55be28
+provider            5a07a2ee-7119-4f42-a0bc-a37bf81bff51
+private_network     6c0334af-1c4d-4e71-ad9c-4923c8efe61c
+
+
+Images
+
+Ubuntu14     05bb3a46-ca32-4032-bedd-8d7ebd5c8100
+CentOS7      aee5438f-1c7c-497f-a11e-53360241cf0f
+
+
