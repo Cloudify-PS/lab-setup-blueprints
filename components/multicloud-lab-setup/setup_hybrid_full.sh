@@ -1,5 +1,4 @@
 #!/bin/bash
-#install DB&LB on AWS, app on openstack VM
 sudo yum install python-netaddr
 sudo source /opt/mgmtworker/env/bin/activate
 sudo pip install netaddr
@@ -10,7 +9,7 @@ cfy profiles use localhost -u admin -p admin -t default_tenant
 #### cleansups
 cfy executions start uninstall -d "openstack-example-network" &
 cfy deployments delete "openstack-example-network"
-cfy blueprints delete "openstack-example-network" &
+cfy blueprints delete "openstack-example-network"
 
 ##upload plugins
 
@@ -40,16 +39,20 @@ cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/r
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-infrastructure.zip -n aws.yaml -b "public-cloud-vm" &
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-infrastructure.zip -n openstack.yaml -b "private-cloud-vm" &
 ### DB LB APP DB
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip  -n public-cloud-application.yaml -b "aws-db-app" &
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip  -n private-cloud-application.yaml -b "openstack-db-app" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n public-cloud-application.yaml -b "aws-db-app" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n private-cloud-application.yaml -b "openstack-db-app" &
 ### DB LB APP LP
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip  -n public-cloud-application.yaml -b "aws-lb-app" &
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip  -n private-cloud-application.yaml -b "openstack-lb-app" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n public-cloud-application.yaml -b "aws-lb-app" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n private-cloud-application.yaml -b "openstack-lb-app" &
 ### DB LB APP Drupal
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip  -n public-cloud-application.yaml -b "aws-drupal" &
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip  -n private-cloud-application.yaml -b "openstack-drupal" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n public-cloud-application.yaml -b "aws-drupal" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n private-cloud-application.yaml -b "openstack-drupal" &
 ### DB LB APP Wordpress
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-kube_app.zip -n application.yaml -b "kube-wordpress-app" &
+cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-app.zip -n application.yaml -b "kube-wordpress-app" &
+
+####cleansups
+cfy deployments delete "openstack-example-network"
+cfy blueprints delete "openstack-example-network" &
 
 ######### Create Kubernetes Cluster Openstack
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/kubernetes.zip -n openstack.yaml -b "kubernetes" &
@@ -57,18 +60,20 @@ cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/r
 cfy deployments create -b "openstack-network"  openstack-network -i external_network_id=2a68ccf6-6722-42f0-a300-de647e55be28 &
 cfy executions start install -d "openstack-network" &
 
-cfy deployments create -b "aws-network"  aws-network &
+cfy deployments create -b "aws-network"  aws-network
 cfy executions start install -d "aws-network" &
 
-cfy deployments delete "openstack-example-network"
-cfy blueprints delete "openstack-example-network" &
+#### create and isnatll deployments of infra VMs + kube
+cfy deployments create -b "kubernetes"  kubernetes
+cfy executions start install -d "kubernetes" &
 
-######create and install deployments of apps on infra VMs
+######create and install deployments of apps on infra VMs +kube app
 
-cfy deployments create -b "aws-db-app" aws-db -i infrastructure--resource_name_prefix=db
-cfy deployments create -b "aws-lb-app" aws-lb  -i infrastructure--resource_name_prefix=lb -i database_deployment=aws-db
-cfy deployments create -b "openstack-drupal" drupal-app -i load_balancer_deployment=aws-lb
+cfy deployments create -b "aws-db-app" aws-db -i infrastructure--resource_name_prefix=db -i network_deployment_name=openstack-network &
+cfy deployments create -b "aws-lb-app" aws-lb  -i infrastructure--resource_name_prefix=lb -i network_deployment_name=openstack-network -i database_deployment=aws-db
 
-#cfy executions start install -d "aws-db"
-#cfy executions start install -d "aws-lb"
-#cfy executions start install -d "drupal-app"
+cfy executions start install -d "aws-db"
+cfy executions start install -d "aws-lb"
+
+cfy deployments create -b "kube-wordpress-app" wordpress -i network_deployment_name=openstack-network -i load_balancer_deployment=aws-lb -i kubernetes_deployment=kubernetes
+#cfy executions start install -d "wordpress" &

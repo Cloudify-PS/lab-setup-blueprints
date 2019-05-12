@@ -20,7 +20,7 @@ cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale
 
 #### upload the vFW BPs prior to isntall of HTTPD
 cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-baseline-bp.yaml -b  fortigate-vnf-baseline-bp --validate &
-cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-portforward-bp.yaml -b  fortigate-portforward-vnf-config --validate
+cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-portforward-bp.yaml -b  fortigate-portforward-vnf-config --validate &
 
 #### install HTTPD
 cfy deployments create -b "private-webserver-bp" private-webserver

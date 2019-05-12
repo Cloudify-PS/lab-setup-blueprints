@@ -23,3 +23,10 @@ Ubuntu14     05bb3a46-ca32-4032-bedd-8d7ebd5c8100
 CentOS7      aee5438f-1c7c-497f-a11e-53360241cf0f
 
 
+
+Name
+network_openstack-example-network_private_network_3xmo2f
+ID
+398626f5-796b-40eb-99d0-b2c6261c96e5
+
+
