@@ -1,0 +1,35 @@
+[
+  {
+    "id": "fortinet-lab",
+    "name": "fortinet-lab",
+    "description": "Deploy Fortigate VFN and configure access to a webserver",
+    "html_url": "https://github.com/Cloudify-PS/lab-setup-blueprints",
+    "zip_url": "https://github.com/cloudify-examples/openstack-example-network/archive/master.zip",
+    "readme_url": "",
+    "image_url": "https://raw.githubusercontent.com/cloudify-examples/drupal-blueprint/master/blueprint.png",
+    "yaml_files": "default.yaml",
+    "created_at": "2018-01-25T13:25:31Z",
+    "updated_at": "2018-05-10T12:45:57Z"
+  },
+  {
+    "id": "multicloud-lab",
+    "name": "multicloud-lab",
+    "description": "Deploy multicloud application",
+    "html_url": "https://github.com/Cloudify-PS/lab-setup-blueprints",
+    "zip_url": "https://github.com/cloudify-examples/aws-example-network/archive/master.zip",
+    "readme_url": "",
+    "created_at": "2018-01-25T13:25:31Z",
+    "updated_at": "2018-05-10T12:45:57Z"
+  },
+  {
+    "id": "vYos-vpn",
+    "name": "vYos-vpn",
+    "description": "Deploy vYos and configure vpn service",
+    "html_url": "https://github.com/Cloudify-PS/lab-setup-blueprints",
+    "zip_url": "https://github.com/Cloudify-PS/lab-setup-blueprints/archive/master.zip",
+    "readme_url": "",
+    "yaml_files": "default.yaml",
+    "created_at": "2018-01-25T12:08:07Z",
+    "updated_at": "2018-05-10T12:46:00Z"
+  }
+]
