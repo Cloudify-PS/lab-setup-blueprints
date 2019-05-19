@@ -12,3 +12,4 @@ node_templates:
         configure:
           implementation: components/multicloud-lab-setup/setup_private.sh
           executor: central_deployment_agent
+          max_retries: 0

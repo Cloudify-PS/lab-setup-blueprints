@@ -38,7 +38,7 @@ cfy secrets create openstack_tenant_name -s admin &
 cfy secrets create openstack_region -s RegionOne &
 cfy secrets create openstack_auth_url -s http://10.10.25.1:5000/v2.0 &
 cfy secrets create openstack_project_name -s admin &
-cfy secrets create base_image_id -s aee5438f-1c7c-497f-a11e-53360241cf0f &
+cfy secrets create base_image_id -s 0847a4c0-99bf-4cb7-9cec-b019eb2fae99 &
 cfy secrets create base_flavor_id -s 4d798e17-3439-42e1-ad22-fb956ec22b54 &
 
 
@@ -79,7 +79,7 @@ cfy deployments create -b "aws-network-bp"  aws-network >> /tmp/lab_status.txt 2
 cfy executions start install -d "aws-network" >> /tmp/lab_status.txt 2>&1
 
 #### create and isnatll deployments of infra VMs + kube
-cfy deployments create -b "kubernetes-bp"  kubernetes -i public_subnet_cidr=10.1.18.0/24 -i external_network_id=2a68ccf6-6722-42f0-a300-de647e55be28 -i region_name=RegionOne -i image_id=aee5438f-1c7c-497f-a11e-53360241cf0f -i flavor_id=4d798e17-3439-42e1-ad22-fb956ec22b54 >> /tmp/lab_status.txt 2>&1
+cfy deployments create -b "kubernetes-bp"  kubernetes -i public_subnet_cidr=10.1.18.0/24 -i external_network_id=2a68ccf6-6722-42f0-a300-de647e55be28 -i region_name=RegionOne -i image_id=0847a4c0-99bf-4cb7-9cec-b019eb2fae99 -i flavor_id=4d798e17-3439-42e1-ad22-fb956ec22b54 >> /tmp/lab_status.txt 2>&1
 cfy executions start install -d "kubernetes" >> /tmp/lab_status.txt 2>&1 &
 
 ######create and install deployments of apps on infra VMs +kube app
