@@ -18,8 +18,8 @@ cfy executions start uninstall -d "openstack-example-network" -p ignore_failure=
 cfy deployments delete "openstack-example-network"  >> /tmp/lab_status.txt 2>&1
 cfy blueprints delete "openstack-example-network"  >> /tmp/lab_status.txt 2>&1 &
 
-cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/openstack-example-network.zip -n blueprint.yaml -b "openstack-example-network-bp"  >> /tmp/lab_status.txt 2>&1
-cfy deployments create -b "openstack-network-bp"  openstack-example-network -i external_network_id=2a68ccf6-6722-42f0-a300-de647e55be28 >> /tmp/lab_status.txt 2>&1
+cfy blueprints upload https://github.com/cloudify-examples/openstack-example-network/archive/4.5.0.1.zip -n simple-blueprint.yaml -b "openstack-example-network"  >> /tmp/lab_status.txt 2>&1
+cfy deployments create -b "openstack-example-network"  openstack-example-network -i external_network_name=external_network >> /tmp/lab_status.txt 2>&1
 cfy executions start install -d "openstack-example-network" >> /tmp/lab_status.txt 2>&1
 
 # Install the webserver
@@ -27,13 +27,13 @@ cfy executions start install -d "openstack-example-network" >> /tmp/lab_status.t
 #cfy blueprints upload -n openstack-vm-blueprint-ws.yaml -b "private-webserver-bp" https://storage.reading-a.openstack.memset.com:8080/swift/v1/ca0c4540c8f84ad3917c40b432a49df8/Blueprints/NFVLAb/private-webserver-blueprint-master.zip
 #cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale-auto-heal-blueprint/archive/master.zip -n openstack.yaml -b "private-webserver-bp" --validate
 
-#specific version for support openstack kilo and plugin
-cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale-auto-heal-blueprint/archive/4.3.zip -n openstack.yaml -b "private-webserver-bp" --validate >> /tmp/lab_status.txt 2>&1 &
+## upload prive webserver BP
+cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale-auto-heal-blueprint/archive/4.3.zip -n openstack.yaml -b "private-webserver-bp" --validate >> /tmp/lab_status.txt 2>&1
 
 
 #### upload the vFW BPs prior to isntall of HTTPD
-cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-baseline-bp.yaml -b  fortigate-vnf-baseline-bp --validate >> /tmp/lab_status.txt 2>&1 &
-cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-portforward-bp.yaml -b  fortigate-portforward-vnf-config --validate >> /tmp/lab_status.txt 2>&1 &
+cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-baseline-bp.yaml -b  fortigate-vnf-baseline-bp --validate >> /tmp/lab_status.txt 2>&1
+cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/archive/master.zip -n fortigate-vnf-portforward-bp.yaml -b  fortigate-portforward-vnf-config --validate >> /tmp/lab_status.txt 2>&1
 
 #### install HTTPD
 cfy deployments create -b "private-webserver-bp" private-webserver >> /tmp/lab_status.txt 2>&1

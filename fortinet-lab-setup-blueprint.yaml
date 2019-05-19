@@ -13,3 +13,7 @@ node_templates:
           implementation: components/fortinet-lab-setup/setup.sh
           executor: central_deployment_agent
           max_retries: 0
+        stop:
+          implementation: components/fortinet-lab-setup/uninstall.sh
+          executor: central_deployment_agent
+          max_retries: 0
