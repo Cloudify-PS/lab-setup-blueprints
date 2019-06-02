@@ -9,6 +9,17 @@
 # cfy secrets create aws_availability_zone -s VALUE &
 # cfy secrets create aws_region_name -s VALUE &
 #############
+############# ,ake sure ti create Openstack secrets as follow
+############# create secrets
+#cfy secrets create openstack_username -s VALUE &
+#cfy secrets create openstack_password -s VALUE &
+#cfy secrets create openstack_tenant_name -s VALUE &
+#cfy secrets create openstack_region -s RegionOne &
+#cfy secrets create openstack_auth_url -s http://URL:5000/v2.0 &
+#cfy secrets create openstack_project_name -s admin &
+#cfy secrets create base_image_id -s VALUE &
+#cfy secrets create base_flavor_id -s VALUE &
+###############################
 
 sudo rm -f /tmp/lab_status.txt
 
