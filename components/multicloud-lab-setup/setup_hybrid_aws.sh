@@ -56,11 +56,13 @@ cfy secrets create base_flavor_id -s 4d798e17-3439-42e1-ad22-fb956ec22b54 &
 
 
 #########  Cloud network environments.
+ctx logger info "Uploading Network blueprints"
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/aws-example-network.zip -n blueprint.yaml -b "aws-network-bp"  >> /tmp/lab_status.txt 2>&1
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/openstack-example-network.zip -n blueprint.yaml -b "openstack-network-bp"  >> /tmp/lab_status.txt 2>&1
 
 ######### DB LB APP  BPs on AWS and openstack
 ### DB LB APP Infra
+ctx logger info "Uploading dblb blueprints"
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-infrastructure.zip -n aws.yaml -b "public-cloud-vm"  >> /tmp/lab_status.txt 2>&1
 cfy blueprints upload https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-7/db-lb-app-infrastructure.zip -n openstack.yaml -b "private-cloud-vm"  >> /tmp/lab_status.txt 2>&1
 
@@ -92,15 +94,19 @@ cfy deployments create -b "aws-network-bp"  aws-network >> /tmp/lab_status.txt 2
 cfy executions start install -d "aws-network" >> /tmp/lab_status.txt 2>&1
 
 #### create and isnatll deployments of infra VMs + kube
+ctx logger info "preparing k8s"
 cfy deployments create -b "kubernetes-bp"  kubernetes -i public_subnet_cidr=10.1.18.0/24 -i external_network_id=2a68ccf6-6722-42f0-a300-de647e55be28 -i region_name=RegionOne -i image_id=aee5438f-1c7c-497f-a11e-53360241cf0f -i flavor_id=4d798e17-3439-42e1-ad22-fb956ec22b54 >> /tmp/lab_status.txt 2>&1
 cfy executions start install -d "kubernetes" >> /tmp/lab_status.txt 2>&1 &
 
 ######create and install deployments of apps on infra VMs +kube app
+ctx logger info "Creating Deplyments for db and lb"
 cfy deployments create -b "aws-db-bp" aws-db -i infrastructure--resource_name_prefix=db -i infrastructure--network_deployment_name=aws-network >> /tmp/lab_status.txt 2>&1
 cfy deployments create -b "aws-lb-bp" aws-lb -i infrastructure--resource_name_prefix=lb -i infrastructure--network_deployment_name=aws-network -i database_deployment=aws-db >> /tmp/lab_status.txt 2>&1
 
+ctx logger info "Executing install workflows for db "
 cfy executions start install -d "aws-db" >> /tmp/lab_status.txt 2>&1
 sleep 60
+ctx logger info "Executing install workflows for lb"
 cfy executions start install -d "aws-lb" >> /tmp/lab_status.txt 2>&1
 
 cfy deployments create -b "kube-wordpress-bp" wordpress-app -i load_balancer_deployment=aws-lb -i kubernetes_deployment=kubernetes >> /tmp/lab_status.txt 2>&1
