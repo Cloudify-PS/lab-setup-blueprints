@@ -27,12 +27,13 @@ sudo rm -f /tmp/lab_status.txt
 cfy profiles use localhost -u admin -p admin -t default_tenant >> /tmp/lab_status.txt 2>&1
 
 #### cleansups
+ctx logger info "Performing Cleanups"
 cfy executions start uninstall -d "openstack-example-network" -p ignore_failure=true >> /tmp/lab_status.txt 2>&1
 cfy deployments delete "openstack-example-network"  >> /tmp/lab_status.txt 2>&1
 cfy blueprints delete "openstack-example-network"  >> /tmp/lab_status.txt 2>&1 &
 
 ##upload plugins
-
+ctx logger info "Uploading Plugins"
 cfy plugins upload https://github.com/cloudify-cosmo/cloudify-aws-plugin/releases/download/2.0.2/cloudify_aws_plugin-2.0.2-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-cosmo/cloudify-aws-plugin/releases/download/2.0.2/plugin.yaml  >> /tmp/lab_status.txt 2>&1
 #cfy plugins upload https://github.com/cloudify-cosmo/cloudify-gcp-plugin/releases/download/1.4.4/cloudify_gcp_plugin-1.4.4-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-cosmo/cloudify-gcp-plugin/releases/download/1.4.4/plugin.yaml  >> /tmp/lab_status.txt 2>&1 &
 #cfy plugins upload https://github.com/cloudify-incubator/cloudify-azure-plugin/releases/download/2.1.2/cloudify_azure_plugin-2.1.2-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-incubator/cloudify-azure-plugin/releases/download/2.1.2/plugin.yaml  >> /tmp/lab_status.txt 2>&1 &
@@ -43,6 +44,7 @@ cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify
 
 
 ############ create secrets
+ctx logger info "Creating Secrets"
 cfy secrets create openstack_username -s admin &
 cfy secrets create openstack_password -s cloudify1234 &
 cfy secrets create openstack_tenant_name -s admin &
