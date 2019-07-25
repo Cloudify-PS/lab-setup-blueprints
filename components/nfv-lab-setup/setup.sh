@@ -17,7 +17,8 @@ ctx logger info "Uploading plugins"
 cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-openstack-plugin/2.14.7/cloudify_openstack_plugin-2.14.7-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-cosmo/cloudify-openstack-plugin/releases/download/2.14.7/plugin.yaml >> /tmp/lab_status.txt 2>&1
 cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-diamond-plugin/1.3.17/cloudify_diamond_plugin-1.3.17-py27-none-linux_x86_64-centos-Core.wgn -y http://www.getcloudify.org/spec/diamond-plugin/1.3.17/plugin.yaml >> /tmp/lab_status.txt 2>&1
 
-
+ctx logger info "installing openstack-network"
+cfy executions start install -d "openstack-network-example" >> /tmp/lab_status.txt 2>&1
 # Upload blueprints
 ###
 ctx logger info "Uploading blueprints"
