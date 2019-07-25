@@ -26,6 +26,10 @@ sudo rm -f /tmp/lab_status.txt
 ### This line is required to set the profile
 cfy profiles use localhost -u admin -p admin -t default_tenant >> /tmp/lab_status.txt 2>&1
 
+ctx logger info "installing netaddr & ipaddr"
+sudo su
+/opt/mgmtworker/env/bin/pip install netaddr ipaddr
+
 #### cleansups
 ctx logger info "Performing Cleanups"
 cfy executions start uninstall -d "openstack-example-network" -p ignore_failure=true >> /tmp/lab_status.txt 2>&1
@@ -38,7 +42,7 @@ cfy plugins upload https://github.com/cloudify-cosmo/cloudify-aws-plugin/release
 #cfy plugins upload https://github.com/cloudify-cosmo/cloudify-gcp-plugin/releases/download/1.4.4/cloudify_gcp_plugin-1.4.4-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-cosmo/cloudify-gcp-plugin/releases/download/1.4.4/plugin.yaml  >> /tmp/lab_status.txt 2>&1 &
 #cfy plugins upload https://github.com/cloudify-incubator/cloudify-azure-plugin/releases/download/2.1.2/cloudify_azure_plugin-2.1.2-py27-none-linux_x86_64-centos-Core.wgn -y https://github.com/cloudify-incubator/cloudify-azure-plugin/releases/download/2.1.2/plugin.yaml  >> /tmp/lab_status.txt 2>&1 &
 cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-ansible-plugin/2.0.3/cloudify_ansible_plugin-2.0.3-py27-none-linux_x86_64-centos-Core.wgn -y http://www.getcloudify.org/spec/ansible-plugin/2.0.3/plugin.yaml  >> /tmp/lab_status.txt 2>&1
-cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-openstack-plugin/3.1.0/cloudify_openstack_plugin-3.1.0-py27-none-linux_x86_64-centos-Core.wgn -y http://www.getcloudify.org/spec/openstack-plugin/3.1.0/plugin.yaml  >> /tmp/lab_status.txt 2>&1
+cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-openstack-plugin/3.1.0/cloudify_openstack_plugin-3.2.0-py27-none-linux_x86_64-centos-Core.wgn -y http://www.getcloudify.org/spec/openstack-plugin/3.2.0/plugin.yaml  >> /tmp/lab_status.txt 2>&1
 cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-ansible-plugin/2.4.0/cloudify_ansible_plugin-2.4.0-py27-none-linux_x86_64-centos-Core.wgn  -y http://www.getcloudify.org/spec/ansible-plugin/2.4.0/plugin.yaml >> /tmp/lab_status.txt 2>&1
 cfy plugins upload http://repository.cloudifysource.org/cloudify/wagons/cloudify-fabric-plugin/1.5.1/cloudify_fabric_plugin-1.5.1-py27-none-linux_x86_64-centos-Core.wgn -y http://www.getcloudify.org/spec/fabric-plugin/1.5.1/plugin.yaml
 
