@@ -34,7 +34,7 @@ cfy executions start install -d "openstack-example-network" >> /tmp/lab_status.t
 
 ## upload prive webserver BP
 ctx logger info "Upload webserver blueprint"
-cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale-auto-heal-blueprint/archive/4.3.zip -n openstack.yaml -b "private-webserver-bp" --validate >> /tmp/lab_status.txt 2>&1
+cfy blueprints upload hhttps://github.com/arikyakir/nodecellar-auto-scale-auto-heal-blueprint/archive/master.zip -n openstack.yaml -b "private-webserver-bp" --validate >> /tmp/lab_status.txt 2>&1
 
 
 #### upload the vFW BPs prior to isntall of HTTPD
