@@ -1,0 +1,175 @@
+tosca_definitions_version: cloudify_dsl_1_3
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/5.0.0/types.yaml
+  - plugin:cloudify-utilities-plugin
+  - plugin:cloudify-openstack-plugin?version= >=3
+  - plugin:cloudify-aws-plugin
+  - plugin:cloudify-ansible-plugin
+  - plugin:cloudify-kubernetes-plugin
+
+inputs:
+  openstack-external-network:
+    type: string
+    description: >
+      the openstack network name or Id to connect for external management
+    default:  { get_secret: openstack-external-network }
+    #default:  dda079ce-12cf-4309-879a-8e67aec94de4
+
+node_templates:
+
+  aws-network:
+    type: cloudify.nodes.ServiceComponent
+    properties:
+      resource_config:
+        blueprint:
+          #external_resource: true # comment if not loaded on CFY
+          id: aws-network-bp
+          blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/aws-example-network.zip
+          main_file_name: blueprint.yaml
+        deployment:
+          id: aws-network
+          auto_inc_suffix: false
+
+  openstack-network:
+    type: cloudify.nodes.ServiceComponent
+    properties:
+      resource_config:
+        blueprint:
+          #external_resource: true # comment if not loaded on CFY
+          id: openstack-network-bp
+          blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/openstack-example-network.zip
+          main_file_name: blueprint.yaml
+        deployment:
+          id: openstack-network
+          auto_inc_suffix: false
+          inputs:
+            external_network_id: { get_input: [ openstack-external-network ] }
+
+  public-infra-vm:
+    type: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: components/multicloud-lab-setup/upload-cloud-infra.sh
+          inputs:
+              id: public-cloud-vm
+              blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/db-lb-app-infrastructure.zip
+              main_file_name: aws.yaml
+          executor: central_deployment_agent
+          max_retries: 0
+        stop:
+          implementation: components/multicloud-lab-setup/uninstall-infra.sh
+          inputs:
+              id: public-cloud-vm
+          executor: central_deployment_agent
+          max_retries: 0
+
+  private-infra-vm:
+    type: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: components/multicloud-lab-setup/upload-cloud-infra.sh
+          inputs:
+            id: private-cloud-vm
+            blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/db-lb-app-infrastructure.zip
+            main_file_name: openstack.yaml
+          executor: central_deployment_agent
+          max_retries: 0
+        stop:
+          implementation: components/multicloud-lab-setup/uninstall-infra.sh
+          inputs:
+            id: private-cloud-vm
+          executor: central_deployment_agent
+          max_retries: 0
+
+
+  aws-db:
+    type: cloudify.nodes.ServiceComponent
+    properties:
+      resource_config:
+        blueprint:
+          #external_resource: true # comment if not loaded on CFY
+          id: aws-db-bp
+          blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/db-lb-app-db.zip
+          main_file_name: public-cloud-application.yaml
+        deployment:
+          id: aws-db
+          auto_inc_suffix: false
+          inputs:
+            infrastructure--resource_name_prefix: db
+            infrastructure--network_deployment_name: aws-network
+    relationships:
+      - type: cloudify.relationships.connected_to
+        target: aws-network
+      - type: cloudify.relationships.connected_to
+        target: public-infra-vm
+
+  aws-lb:
+    type: cloudify.nodes.ServiceComponent
+    properties:
+      resource_config:
+        blueprint:
+          #external_resource: true # comment if not loaded on CFY
+          id: aws-lb-bp
+          blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/db-lb-app-lb.zip
+          main_file_name: public-cloud-application.yaml
+        deployment:
+          id: aws-lb
+          auto_inc_suffix: false
+          inputs:
+            infrastructure--resource_name_prefix: lb
+            infrastructure--network_deployment_name: aws-network
+            database_deployment: aws-db
+    relationships:
+      - type: cloudify.relationships.connected_to
+        target: aws-db
+      - type: cloudify.relationships.connected_to
+        target: public-infra-vm
+
+  wordpress-app:
+    type: cloudify.nodes.ServiceComponent
+    properties:
+      resource_config:
+        blueprint:
+          #external_resource: true # comment if not loaded on CFY
+          id: wordpress-bp
+          blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/db-lb-app-kube_app.zip
+          main_file_name: application.yaml
+        deployment:
+          id: wordpress
+          auto_inc_suffix: true
+          inputs:
+            load_balancer_deployment: aws-lb
+            kubernetes_deployment: kubernetes
+    relationships:
+      - type: cloudify.relationships.connected_to
+        target: kubernetes
+      - type: cloudify.relationships.connected_to
+        target: aws-lb
+        
+  kubernetes:
+    type: cloudify.nodes.ServiceComponent
+    properties:
+      resource_config:
+        blueprint:
+          #external_resource: true # comment if not loaded on CFY
+          id: kubernetes-bp
+          blueprint_archive: https://github.com/cloudify-community/blueprint-examples/releases/download/4.5.5-18/kubernetes.zip
+          main_file_name: openstack.yaml
+        deployment:
+          id: kubernetes
+          auto_inc_suffix: false
+          inputs:
+            external_network_id: { get_input: [ openstack-external-network ] }
+            region_name: RegionOne
+            image_id: 0847a4c0-99bf-4cb7-9cec-b019eb2fae99
+            flavor_id: 3
+    relationships:
+#      - type: cloudify.relationships.connected_to
+#        target: openstack-infra-vm
+      - type: cloudify.relationships.connected_to
+        target: private-infra-vm
+      - type: cloudify.relationships.connected_to
+        target: openstack-network

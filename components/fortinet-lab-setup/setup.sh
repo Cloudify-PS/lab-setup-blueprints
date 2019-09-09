@@ -21,20 +21,16 @@ cfy deployments delete "openstack-example-network"  >> /tmp/lab_status.txt 2>&1
 cfy blueprints delete "openstack-example-network"  >> /tmp/lab_status.txt 2>&1 &
 
 ctx logger info "Uploading openstack nwtork blueprint"
-cfy blueprints upload https://github.com/cloudify-examples/openstack-example-network/archive/4.5.0.1.zip -n simple-blueprint.yaml -b "openstack-example-network"  >> /tmp/lab_status.txt 2>&1
+cfy blueprints upload https://github.com/arikyakir/openstack-example-network/archive/master.zip -n simple-blueprint.yaml -b "openstack-network-bp"  >> /tmp/lab_status.txt 2>&1
 
 ctx logger info "Create openstack nwtork deployment"
-cfy deployments create -b "openstack-example-network"  openstack-example-network -i external_network_name=external_network >> /tmp/lab_status.txt 2>&1
-cfy executions start install -d "openstack-example-network" >> /tmp/lab_status.txt 2>&1
+cfy deployments create -b "openstack-network-bp"  openstack-network -i external_network_name=external_network >> /tmp/lab_status.txt 2>&1
+cfy executions start install -d "openstack-network" >> /tmp/lab_status.txt 2>&1
 
-# Install the webserver
-####
-#cfy blueprints upload -n openstack-vm-blueprint-ws.yaml -b "private-webserver-bp" https://storage.reading-a.openstack.memset.com:8080/swift/v1/ca0c4540c8f84ad3917c40b432a49df8/Blueprints/NFVLAb/private-webserver-blueprint-master.zip
-#cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale-auto-heal-blueprint/archive/master.zip -n openstack.yaml -b "private-webserver-bp" --validate
 
 ## upload prive webserver BP
 ctx logger info "Upload webserver blueprint"
-cfy blueprints upload https://github.com/cloudify-examples/nodecellar-auto-scale-auto-heal-blueprint/archive/4.3.zip -n openstack.yaml -b "private-webserver-bp" --validate >> /tmp/lab_status.txt 2>&1
+cfy blueprints upload https://github.com/arikyakir/nodecellar-blueprint/archive/master.zip -n openstack.yaml -b "private-webserver-bp" --validate >> /tmp/lab_status.txt 2>&1
 
 
 #### upload the vFW BPs prior to isntall of HTTPD
