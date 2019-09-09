@@ -41,7 +41,7 @@ cfy blueprints upload https://github.com/arikyakir/fortigate-pf-vnf-blueprint/ar
 #### install HTTPD
 
 ctx logger info "Create private webserver deployment"
-cfy deployments create -b "private-webserver-bp" private-webserver >> /tmp/lab_status.txt 2>&1
+cfy deployments create -b "private-webserver-bp" private-webserver -i network_blueprint_name="openstack-network-bp";network_blueprint_archive="https://github.com/arikyakir/openstack-example-network/archive/master.zip";network_deployment_name="openstack-network";network_blueprint_main_yaml="simple-blueprint.yaml">> /tmp/lab_status.txt 2>&1
 ctx logger info "Install private webserver deployment"
 cfy executions start install -d "private-webserver" >> /tmp/lab_status.txt 2>&1
 
